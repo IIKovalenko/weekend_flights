@@ -2,17 +2,35 @@ import requests
 import json
 import datetime
 import time
+import logging
 from weekends import weekends, may_weekends, weekday_names
 from countries import countries, country_codes, country_names_dict
 from cities import cities
 
+# Существует пять уровней логирования (в порядке возрастания): DEBUG, INFO, WARNING, ERROR и CRITICAL
+
+root_logger= logging.getLogger()
+root_logger.setLevel(logging.INFO)
+# handler = logging.StreamHandler(sys.stdout) # для вывода в консоль
+handler = logging.FileHandler('main.log', encoding='utf-8')
+formatter = logging.Formatter('LINE:%(lineno)3d # %(levelname)-8s [%(asctime)s]  %(message)s')
+handler.setFormatter(formatter)
+root_logger.addHandler(handler)
+
 # TODO:
-# 1. Очистить функцию find_weekend_flight - она должна только находить и возвращать какой-то список
+# 1. Очистить функцию find_weekend_flight - она должна только находить и возвращать какой-то список, а не вызывать фунцию post_to_vk
+#       вызов функции post_to_vk надо сделать в main(), чтобы потом можно было написать новую функцию поиска через другой метод API, и чтобы все заработало
 # 2. Сделать функцию для печати результата поиска
 # 3. ГОТОВО - Сделать функцию для отправки результатов поиска куда-либо (например, в паблик в вк)
+# 4. Сделать логирование в двух режимах - стандартный и дебаг на случай ошибок
+# 5. Написать для себя краткую документацию в README.md
+# 6. Спрятать токены: авиасейлза и вконтактовский
+# 7. Перевести все уведомления на русский язык
 
 
 def post_to_vk(flight_dict):
+    root_logger.debug('Func "post_to_vk" has started')
+    root_logger.debug('got flight_dict as input: {}'.format(flight_dict))
     # ключ, полученный по спец ссылке (надо будет получать снова при обновлении ip-адреса)
     # для этого в адресной строке браузера ввел типа такого и получил заветный токен доступа.
     # запрос:
@@ -47,11 +65,13 @@ def post_to_vk(flight_dict):
                                                                         'signed': 0,
                                                                        'v':"5.52"}).json()
 
-    print(response)
+    root_logger.debug(response)
+    root_logger.debug('Func "post_to_vk" has finished')
 
 
 # function, which gets cheapest flights for last 48 hours (https://support.travelpayouts.com/hc/ru/articles/203956163#02)
 def get_latest_prices_of_month(destination, beginning_of_period):
+    root_logger.debug('Func "get_latest_prices_of_month" has started')
     TOKEN = 'a4da858f9d18ab2292ecbb4dddec4485'
     url='http://api.travelpayouts.com/v2/prices/latest'
     payload = {
@@ -64,11 +84,15 @@ def get_latest_prices_of_month(destination, beginning_of_period):
         'limit': 1000
     }
     response = requests.get(url, params=payload)
-    return response.json()	
+    root_logger.debug('Func "get_latest_prices_of_month" has finished')
+    return response.json()
 
 
-def find_weekend_flights(flights_data):
+def find_weekend_flights(flights_data, days, max_value):
+    root_logger.debug('Func "find_weekend_flights" has started')
     for flight in flights_data:
+        root_logger.debug('Flight: {}'.format(flight))
+
         found_at = flight['found_at']
 
         try:
@@ -79,11 +103,10 @@ def find_weekend_flights(flights_data):
         time_now = datetime.datetime.now()
         time_difference = time_now - found_at_datetime
         time_difference_in_hours = time_difference / datetime.timedelta(hours=1)
-        
-        max_value = 8000
 
         if time_difference_in_hours <= 1 and flight['value'] <= max_value:
-            for date in weekends:
+            for date in days:
+                root_logger.debug('Comparing with date {}'.format(date))
                 if flight['depart_date'] == date[0] and flight['return_date'] == date[1]:
                     depart_date_formatted = ''.join(reversed(flight['depart_date'][5:].split('-')))
                     return_date_formatted = ''.join(reversed(flight['return_date'][5:].split('-')))
@@ -101,7 +124,7 @@ def find_weekend_flights(flights_data):
                     origin = cities[flight['origin']]
                     destination = cities[flight['destination']]
 
-                    print('{origin} - {destination} '\
+                    root_logger.info('{origin} - {destination} '\
                         'from {depart_date} ({depart_week_day}) '\
                         'to {return_date} ({return_week_day}) '\
                         'for {value} rub'.format(
@@ -119,9 +142,8 @@ def find_weekend_flights(flights_data):
                         flight['destination'],
                         return_date_formatted
                     )
-                    print(link)
-                    print('Found at {}'.format(flight['found_at']))
-                    print()
+                    root_logger.info(link)
+                    root_logger.info('Flight found at {}'.format(flight['found_at']))
 
                     flight_dict = {
                         'origin': origin,
@@ -135,11 +157,12 @@ def find_weekend_flights(flights_data):
                     }
 
                     post_to_vk(flight_dict)
-
         break
 
+    root_logger.debug('Func "find_weekend_flights" has finished')
 
 def main():
+    root_logger.debug('Func "main" has started')
     months = {
         'february': '2019-02-01',
         # 'march': '2019-03-01',
@@ -154,59 +177,22 @@ def main():
         # 'december': '2019-12-01'
     }
 
+    max_ticket_price = 8000
+
     for key in months.keys():
-        print(key)
+        root_logger.info('Starting to check flights in {}'.format(key))
         for country_code in country_codes:
             destination = country_code
-            # print(country_names_dict[destination])
-            # print('.', end='')
+            root_logger.info('Searching flights to {}'.format(country_names_dict[destination]))
             flights_raw = get_latest_prices_of_month(destination, months[key])
             flights_data = flights_raw['data']
-            # print(len(flights_data))
-            find_weekend_flights(flights_data)
-            # time.sleep(0.1)
-        print()
+            root_logger.info('Found {} flights to {}'.format(len(flights_data), country_names_dict[destination]))
+            find_weekend_flights(flights_data, weekends, max_ticket_price)
+            # здесь должно быть примерно так: 
+            # weekend_flights = find_weekends_flights(flights_data, weekends)            
+            # root_logger.debug('Found {} weekend flights'.format(len(weekend_flights)))
 
+    root_logger.debug('Func "main" has finished\n\n\n')
 
 if __name__ == '__main__':
     main()
-
-    # mix_weekends()
-    # print(weekends)
-    # test()
-
-def time_str_to_datetime():
-    found_at = '2019-01-30T09:30:10'
-    found_at_datetime = datetime.datetime.strptime(found_at, '%Y-%m-%dT%H:%M:%S')
-    
-    time_now = datetime.datetime.now()
-    time_difference = time_now - found_at_datetime
-    time_difference_in_hours = time_difference / datetime.timedelta(hours=1)
-
-    print(type(found_at_datetime))
-    print(found_at_datetime)
-    print(time_now)
-    print(type(time_difference_in_hours))
-    print(time_difference_in_hours)
-
-
-def daterange(start_date, end_date):
-    for n in range(int ((end_date - start_date).days)):
-        yield start_date + datetime.timedelta(n)
-
-def weekends():
-    start_date = datetime.date(2019, 1, 1)
-    end_date = datetime.date(2019, 12, 31)
-    for single_date in daterange(start_date, end_date):
-        if single_date.isoweekday() in [1, 5, 6, 7]:
-            print(single_date.strftime("%Y-%m-%d"))
-        if single_date.isoweekday() in [1, 4]:
-            print()
-        '''
-        if single_date.isoweekday() == (1 or 5 or 6 or 7):
-            single_weekend_options.append(single_date.strftime("%Y-%m-%d"))
-        else: 
-            if single_weekend_options:
-                weekends.append(single_weekend_options)
-        '''
-
