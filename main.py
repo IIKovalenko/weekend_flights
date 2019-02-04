@@ -26,7 +26,23 @@ root_logger.addHandler(handler)
 # 5. Написать для себя краткую документацию в README.md
 # 6. Спрятать токены: авиасейлза и вконтактовский
 # 7. Перевести все уведомления на русский язык
+# 8. Запустить поиск на майские
+# 9. Запустить поиск в Уфу на выходные со стоимостью меньше 5 тысяч
 
+# 10. Убрать из бота даты на март, в которые будем в Италии
+# 11. Добавить дополнительно в функцию search_flights поиск билетов на майские
+# 12. Сделать отдельный список городов, которые исключить из поиска (Сургут и тд)
+# 13. Уменьшить стоимость билетов на выходные до 4к 
+# 14. Стоимость билетов на майские сделать <=7к
+# 15. Попробовать через IFTT придумать, как отправлять себе именно уведомления, а не просто в паблик в вк, может у них есть апи?
+#       уже придумал, осталось реализовать через функцию
+#       пример кода в файле ifttt_test.py
+#       лучше посмотреть здесь, как реализована функция post_ifttt_webhook
+# 16. Начать все делать частые коммиты, т.е. после каждого изменения коммитить с описанием изменений, тем более в винде это легко делать с помощью проги от гита. 
+# 17. Причесать код (чистые функции и т.д.), сделать хороший ридми, скрыть все токены и другую персональную инфу и выложить реощиторий в открытый доступ — не надо жадничать! Надо давать этому миру. 
+# Тем более, что это будет проект, который я смогу показать как пример своей работы.
+# 18. В ридми надо описать, можно ссылкой на отдельный файл — как запустить крон на винде и на юниксе, чтобы скрипт работал всегда. Если настрою что-то через IFTT, то тоже описать, как все настроить.
+# 19. Сделать, чтобы find_flights искала сразу по нужным направлениям, которые бы принимала в качестве аргумента
 
 def post_to_vk(flight_dict):
     root_logger.debug('Func "post_to_vk" has started')
@@ -69,6 +85,18 @@ def post_to_vk(flight_dict):
     root_logger.debug('Func "post_to_vk" has finished')
 
 
+# здесь надо передавать сразу словарь с value1, value2, value3
+def post_ifttt_webhook(event, data):
+    # продумать, как хранить ключ - надо со всеми остальными секретными ключами
+    # IFTTT_WEBHOOKS_URL = 'https://maker.ifttt.com/trigger/{}/with/key/{your-IFTTT-key}'
+    # Вставка желаемого события
+    # ifttt_event_url = IFTTT_WEBHOOKS_URL.format(event)
+    # ниже неправильная версия, надо передавать и название ивента, и словарь со значениями
+    ifttt_event_url = 'https://maker.ifttt.com/trigger/ticket_found/with/key/iKJF3s9xrt82AH9e3GAbYHPf9YqJwdx3yYy_ZJZil2H'
+    # Отправка запроса HTTP POST в URL вебхука
+    requests.post(ifttt_event_url, json=data)
+
+
 # function, which gets cheapest flights for last 48 hours (https://support.travelpayouts.com/hc/ru/articles/203956163#02)
 def get_latest_prices_of_month(destination, beginning_of_period):
     root_logger.debug('Func "get_latest_prices_of_month" has started')
@@ -90,6 +118,10 @@ def get_latest_prices_of_month(destination, beginning_of_period):
 
 def find_weekend_flights(flights_data, days, max_value):
     root_logger.debug('Func "find_weekend_flights" has started')
+
+    # здесь будут словарь по найденным перелетам
+    found_flights = []
+
     for flight in flights_data:
         root_logger.debug('Flight: {}'.format(flight))
 
@@ -104,7 +136,7 @@ def find_weekend_flights(flights_data, days, max_value):
         time_difference = time_now - found_at_datetime
         time_difference_in_hours = time_difference / datetime.timedelta(hours=1)
 
-        if time_difference_in_hours <= 1 and flight['value'] <= max_value:
+        if time_difference_in_hours <= 24 and flight['value'] <= max_value:
             for date in days:
                 root_logger.debug('Comparing with date {}'.format(date))
                 if flight['depart_date'] == date[0] and flight['return_date'] == date[1]:
@@ -155,29 +187,29 @@ def find_weekend_flights(flights_data, days, max_value):
                         'value': flight['value'],
                         'link': link
                     }
-
-                    post_to_vk(flight_dict)
-        break
-
-    root_logger.debug('Func "find_weekend_flights" has finished')
+                    found_flights.append(flight_dict)
+                    
+    root_logger.debug('Func "find_weekend_flights" has finished, found {} flights'.format(len(found_flights)))
+    return found_flights
 
 def main():
     root_logger.debug('Func "main" has started')
     months = {
         'february': '2019-02-01',
-        # 'march': '2019-03-01',
-        # 'april': '2019-04-01',
-        # 'may': '2019-05-01',
-        # 'june': '2019-06-01',
-        # 'july': '2019-07-01',
-        # 'august': '2019-08-01',
-        # 'september': '2019-09-01',
-        # 'october': '2019-10-01',
-        # 'november': '2019-11-01',
-        # 'december': '2019-12-01'
+        'march': '2019-03-01',
+        'april': '2019-04-01',
+        'may': '2019-05-01',
+        'june': '2019-06-01',
+        'july': '2019-07-01',
+        'august': '2019-08-01',
+        'september': '2019-09-01',
+        'october': '2019-10-01',
+        'november': '2019-11-01',
+        'december': '2019-12-01'
     }
 
-    max_ticket_price = 8000
+    max_ticket_price = 4000
+    may_max_ticket_price = 8000
 
     for key in months.keys():
         root_logger.info('Starting to check flights in {}'.format(key))
@@ -187,12 +219,40 @@ def main():
             flights_raw = get_latest_prices_of_month(destination, months[key])
             flights_data = flights_raw['data']
             root_logger.info('Found {} flights to {}'.format(len(flights_data), country_names_dict[destination]))
-            find_weekend_flights(flights_data, weekends, max_ticket_price)
-            # здесь должно быть примерно так: 
-            # weekend_flights = find_weekends_flights(flights_data, weekends)            
-            # root_logger.debug('Found {} weekend flights'.format(len(weekend_flights)))
+            # для всех выходных
+            weekend_flights = find_weekend_flights(flights_data, weekends, max_ticket_price)
+            for flight in weekend_flights:
+                flight_info = 'На выходные: Москва - {destination} за {price}р., {depart_date} ({depart_week_day})'\
+                              '-{return_date} ({return_week_day})'.format(
+                                        destination=flight['destination'],
+                                        price=flight['value'],
+                                        depart_date=flight['depart_date'],
+                                        depart_week_day=flight['depart_week_day'],
+                                        return_date=flight['return_date'],
+                                        return_week_day=flight['return_week_day']
+                                )
+                root_logger.debug('Flight info to send to IFTTT: '.format(flight_info))
+                post_ifttt_webhook('event', {'value1': flight_info})
+                post_to_vk(flight_dict)
+
+            # для майских
+            may_weekend_flights = find_weekend_flights(flights_data, may_weekends, may_max_ticket_price)
+            for flight in may_weekend_flights:
+                flight_info = 'На майские: Москва - {destination} за {price}р., {depart_date} ({depart_week_day})'\
+                              '-{return_date} ({return_week_day})'.format(
+                                        destination=flight['destination'],
+                                        price=flight['value'],
+                                        depart_date=flight['depart_date'],
+                                        depart_week_day=flight['depart_week_day'],
+                                        return_date=flight['return_date'],
+                                        return_week_day=flight['return_week_day']
+                                )
+                root_logger.debug('Flight info to send to IFTTT: '.format(flight_info))
+                post_ifttt_webhook('event', {'value1': flight_info})
+                post_to_vk(flight_dict)
 
     root_logger.debug('Func "main" has finished\n\n\n')
+
 
 if __name__ == '__main__':
     main()
