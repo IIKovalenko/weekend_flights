@@ -12,7 +12,7 @@ from cities import cities
 root_logger= logging.getLogger()
 root_logger.setLevel(logging.INFO)
 # handler = logging.StreamHandler(sys.stdout) # для вывода в консоль
-handler = logging.FileHandler('main.log', encoding='utf-8')
+handler = logging.FileHandler('C:\wknd\main.log', encoding='utf-8')
 formatter = logging.Formatter('LINE:%(lineno)3d # %(levelname)-8s [%(asctime)s]  %(message)s')
 handler.setFormatter(formatter)
 root_logger.addHandler(handler)
@@ -329,5 +329,5 @@ def test_run():
 
 
 if __name__ == '__main__':
-    # main()
-    test_run()
+    main()
+    # test_run()
