@@ -4465,3 +4465,57 @@ LINE:286 # INFO     [2019-02-04 17:06:34,698]
 
 Ufa weekend flights:
 LINE:287 # INFO     [2019-02-04 17:06:34,698]  []
+LINE:251 # INFO     [2019-02-05 09:52:56,860]  Func "main" has started
+LINE:277 # INFO     [2019-02-05 09:53:11,985]  Найденные былеты на выходные:
+[]
+LINE:287 # INFO     [2019-02-05 09:53:12,015]  Найденные былеты на майские:
+[]
+LINE:300 # INFO     [2019-02-05 09:53:12,335]  Найденные былеты на выходные в Уфу:
+[]
+LINE:310 # INFO     [2019-02-05 09:53:12,345]  Найденные былеты на майские в Уфу:
+[]
+LINE:312 # INFO     [2019-02-05 09:53:12,345]  Func "main" has finished
+
+
+
+LINE:251 # INFO     [2019-02-05 09:54:34,061]  Func "main" has started
+LINE:277 # INFO     [2019-02-05 09:54:56,334]  Найденные былеты на выходные:
+[{'origin': 'Москва', 'destination': 'Калуга', 'depart_date': '2019-02-22', 'depart_week_day': 'Пт', 'return_date': '2019-02-24', 'return_week_day': 'Вс', 'value': 1286, 'link': 'https://www.aviasales.ru/search/MOW2202KLF24021?marker=207849'}, {'origin': 'Москва', 'destination': 'Калининград', 'depart_date': '2019-02-09', 'depart_week_day': 'Сб', 'return_date': '2019-02-11', 'return_week_day': 'Пн', 'value': 3048, 'link': 'https://www.aviasales.ru/search/MOW0902KGD11021?marker=207849'}, {'origin': 'Москва', 'destination': 'Владикавказ', 'depart_date': '2019-02-23', 'depart_week_day': 'Сб', 'return_date': '2019-02-25', 'return_week_day': 'Пн', 'value': 3057, 'link': 'https://www.aviasales.ru/search/MOW2302OGZ25021?marker=207849'}]
+LINE:287 # INFO     [2019-02-05 09:54:56,364]  Найденные былеты на майские:
+[]
+LINE:300 # INFO     [2019-02-05 09:55:09,341]  Найденные былеты на выходные в Уфу:
+[{'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-15', 'depart_week_day': 'Пт', 'return_date': '2019-02-18', 'return_week_day': 'Пн', 'value': 4282, 'link': 'https://www.aviasales.ru/search/MOW1502UFA18021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-23', 'depart_week_day': 'Сб', 'return_date': '2019-02-24', 'return_week_day': 'Вс', 'value': 4616, 'link': 'https://www.aviasales.ru/search/MOW2302UFA24021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-15', 'depart_week_day': 'Пт', 'return_date': '2019-02-17', 'return_week_day': 'Вс', 'value': 4818, 'link': 'https://www.aviasales.ru/search/MOW1502UFA17021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-22', 'depart_week_day': 'Пт', 'return_date': '2019-02-24', 'return_week_day': 'Вс', 'value': 4856, 'link': 'https://www.aviasales.ru/search/MOW2202UFA24021?marker=207849'}]
+LINE:310 # INFO     [2019-02-05 09:55:09,351]  Найденные былеты на майские в Уфу:
+[]
+LINE:312 # INFO     [2019-02-05 09:55:09,351]  Func "main" has finished
+
+
+
+LINE:303 # INFO     [2019-02-05 10:21:24,672]  Func "test_run" has started
+LINE:317 # INFO     [2019-02-05 10:21:25,065]  Найденные былеты на выходные в Уфу:
+[]
+LINE:319 # INFO     [2019-02-05 10:21:25,065]  Func "test_run" has finished
+
+
+
+LINE:306 # INFO     [2019-02-05 10:22:57,065]  Func "test_run" has started
+LINE:320 # INFO     [2019-02-05 10:22:57,385]  Найденные былеты на выходные в Уфу:
+[]
+LINE:322 # INFO     [2019-02-05 10:22:57,385]  Func "test_run" has finished
+
+
+
+LINE:306 # INFO     [2019-02-05 10:23:16,402]  Func "test_run" has started
+LINE:320 # INFO     [2019-02-05 10:23:36,078]  Найденные былеты на выходные в Уфу:
+[{'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-15', 'depart_week_day': 'Пт', 'return_date': '2019-02-18', 'return_week_day': 'Пн', 'value': 4299, 'link': 'https://www.aviasales.ru/search/MOW1502UFA18021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-23', 'depart_week_day': 'Сб', 'return_date': '2019-02-24', 'return_week_day': 'Вс', 'value': 4616, 'link': 'https://www.aviasales.ru/search/MOW2302UFA24021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-15', 'depart_week_day': 'Пт', 'return_date': '2019-02-17', 'return_week_day': 'Вс', 'value': 4818, 'link': 'https://www.aviasales.ru/search/MOW1502UFA17021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-22', 'depart_week_day': 'Пт', 'return_date': '2019-02-24', 'return_week_day': 'Вс', 'value': 4856, 'link': 'https://www.aviasales.ru/search/MOW2202UFA24021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-22', 'depart_week_day': 'Пт', 'return_date': '2019-02-25', 'return_week_day': 'Пн', 'value': 5067, 'link': 'https://www.aviasales.ru/search/MOW2202UFA25021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-16', 'depart_week_day': 'Сб', 'return_date': '2019-02-17', 'return_week_day': 'Вс', 'value': 5116, 'link': 'https://www.aviasales.ru/search/MOW1602UFA17021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-09', 'depart_week_day': 'Сб', 'return_date': '2019-02-11', 'return_week_day': 'Пн', 'value': 5370, 'link': 'https://www.aviasales.ru/search/MOW0902UFA11021?marker=207849'}, {'origin': 'Москва', 'destination': 'Уфа', 'depart_date': '2019-02-08', 'depart_week_day': 'Пт', 'return_date': '2019-02-11', 'return_week_day': 'Пн', 'value': 5670, 'link': 'https://www.aviasales.ru/search/MOW0802UFA11021?marker=207849'}]
+LINE:322 # INFO     [2019-02-05 10:23:36,078]  Func "test_run" has finished
+
+
+
+LINE:306 # INFO     [2019-02-12 13:14:39,135]  Func "test_run" has started
+LINE:320 # INFO     [2019-02-12 13:14:39,595]  Найденные былеты на выходные в Уфу:
+[]
+LINE:322 # INFO     [2019-02-12 13:14:39,595]  Func "test_run" has finished
+
+
+

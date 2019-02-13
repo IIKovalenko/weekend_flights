@@ -181,7 +181,7 @@ def find_weekend_flights(flights_data, days, max_value):
         time_difference = time_now - found_at_datetime
         time_difference_in_hours = time_difference / datetime.timedelta(hours=1)
 
-        if time_difference_in_hours <= 1 and flight['value'] <= max_value:
+        if time_difference_in_hours <= 6 and flight['value'] <= max_value:
             for date in days:
                 if flight['depart_date'] == date[0] and flight['return_date'] == date[1]:
                     depart_date_formatted = ''.join(reversed(flight['depart_date'][5:].split('-')))
@@ -255,9 +255,14 @@ def main():
     }
 
     flights_data = get_latest_flights(country_codes, months)
+    root_logger.info('Найдено {} билетов по России и Европе'.format(len(flights_data)))
+    # НАДО СДЕЛАТЬ, ЧТОБЫ СКРИПТ ИСКАЛ НЕ ТОЛЬКО ПО СТРАНАМ, А И ПО НЕКОТОРЫМ ГОРОДАМ!
+    # НАПРИМЕР, ДЛЯ РОССИИ ОПРЕДЕЛЕИТЬ ТОЛЬКО НЕСКОЛЬКО ГОРОДОВ, КУДА БЫ Я ХОТЕЛ ПОЛЕТЕТЬ И ОСТАВИТЬ ТОЛЬКО ИХ
+    # ТАКЖЕ ДОБАВИТЬ ОТДЕЛЬНО КРУПНЫЕ ГОРОДА, КУДА ХОЧЕТСЯ, ТИПА ПАРИЖ, БЕРЛИН, ПРАГА, ЛЕЙПЦИГ, АМСТЕРДАМ, ДЮССЕЛЬДОРФ И Т.Д,
+    # В ОБЩЕМ ЕВРОПЕЙСКИЕ ГОРОДА, ДЛЯ КОТОРЫХ НАДО ДЕЛАТЬ ОТДЕЛЬНЫЙ ЗАПРОС И СОБИРАТЬ О НИХ ИНФУ!
 
     # для всех выходных
-    max_weekend_ticket_price = 4000
+    max_weekend_ticket_price = 5000
     weekend_flights = find_weekend_flights(flights_data, weekends, max_weekend_ticket_price)
     root_logger.debug('Weekend flights:\n{}'.format(weekend_flights))
     weekend_notice = 'На выходные'
@@ -267,7 +272,7 @@ def main():
     root_logger.info('Найденные былеты на выходные:\n{}'.format(weekend_flights))
 
     # для майских
-    max_may_weekend_ticket_price = 8000
+    max_may_weekend_ticket_price = 10000
     may_weekend_flights = find_weekend_flights(flights_data, may_weekends, max_may_weekend_ticket_price)
     root_logger.debug('\n\nMay weekend flights:\n{}'.format(may_weekend_flights))
     may_notice = 'На майские'
@@ -278,9 +283,10 @@ def main():
 
     # В Уфу
     ufa_flights_data = get_latest_flights(['UFA'], months)
+    root_logger.info('Найдено {} билетов в Уфу'.format(len(ufa_flights_data)))
 
     # на выходных в Уфу
-    max_ufa_ticket_price = 3000
+    max_ufa_ticket_price = 4000
     ufa_weekend_flights = find_weekend_flights(ufa_flights_data, weekends, max_ufa_ticket_price)
     root_logger.debug('\n\nUfa weekend flights:\n{}'.format(ufa_weekend_flights))
     ufa_notice = 'В Уфу на выходные'
